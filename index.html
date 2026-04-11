@@ -1,0 +1,2028 @@
+<!doctype html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Al-Qur'an Digital</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        />
+        <script>
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            arab: ["Amiri", "serif"],
+                            sans: ["Plus Jakarta Sans", "sans-serif"],
+                        },
+                    },
+                },
+            };
+        </script>
+        <style>
+            :root {
+                --bg: #faf9f6;
+                --bg-s: #f0efeb;
+                --fg: #1c1917;
+                --fg-m: #78716c;
+                --accent: #059669;
+                --accent-h: #047857;
+                --accent-l: #d1fae5;
+                --accent-sub: #ecfdf5;
+                --gold: #b8860b;
+                --gold-l: #fef3c7;
+                --card: #ffffff;
+                --card-h: #fafaf9;
+                --border: #e7e5e4;
+                --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            }
+            .dark {
+                --bg: #0c1810;
+                --bg-s: #132a1c;
+                --fg: #e7e5e4;
+                --fg-m: #a8a29e;
+                --accent: #34d399;
+                --accent-h: #6ee7b7;
+                --accent-l: #064e3b;
+                --accent-sub: #022c22;
+                --gold: #fbbf24;
+                --gold-l: #451a03;
+                --card: #162b1e;
+                --card-h: #1f3d2d;
+                --border: #2d5a3f;
+                --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            }
+            body {
+                background: var(--bg);
+                color: var(--fg);
+                transition:
+                    background 0.3s,
+                    color 0.3s;
+            }
+            * {
+                scrollbar-width: thin;
+                scrollbar-color: var(--border) transparent;
+            }
+            ::-webkit-scrollbar {
+                width: 6px;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: var(--border);
+                border-radius: 3px;
+            }
+
+            .verse-num {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 38px;
+                height: 38px;
+                position: relative;
+                flex-shrink: 0;
+                color: var(--gold);
+                font-size: 11px;
+                font-weight: 700;
+                font-family: "Plus Jakarta Sans", sans-serif;
+            }
+            .verse-num::before {
+                content: "";
+                position: absolute;
+                inset: 2px;
+                border: 1.5px solid var(--gold);
+                transform: rotate(45deg);
+                border-radius: 3px;
+            }
+            .arabic-text {
+                font-family: "Amiri", serif;
+                font-size: 1.85rem;
+                line-height: 3;
+                direction: rtl;
+                text-align: right;
+                color: var(--fg);
+                letter-spacing: 0.01em;
+            }
+            @media (max-width: 640px) {
+                .arabic-text {
+                    font-size: 1.5rem;
+                    line-height: 2.7;
+                }
+            }
+
+            .hero-pattern {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='0.8'/%3E%3Ccircle cx='30' cy='30' r='12' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='0.5'/%3E%3C/svg%3E");
+                background-size: 60px 60px;
+            }
+            .bismillah-ornament {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 1rem;
+            }
+            .bismillah-ornament::before,
+            .bismillah-ornament::after {
+                content: "";
+                flex: 1;
+                max-width: 140px;
+                height: 1px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--gold),
+                    transparent
+                );
+            }
+
+            .verse-highlight {
+                animation: highlightPulse 2.5s ease-out;
+            }
+            @keyframes highlightPulse {
+                0% {
+                    background: var(--gold-l);
+                    box-shadow: 0 0 0 2px var(--gold);
+                }
+                100% {
+                    background: transparent;
+                    box-shadow: none;
+                }
+            }
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(16px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .fade-in {
+                animation: fadeInUp 0.4s ease-out both;
+            }
+
+            @keyframes spin-slow {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            .spin-slow {
+                animation: spin-slow 1.5s linear infinite;
+            }
+
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0px);
+                }
+                50% {
+                    transform: translateY(-10px);
+                }
+            }
+            .float-anim {
+                animation: float 6s ease-in-out infinite;
+            }
+
+            .toast-enter {
+                animation: toastIn 0.3s ease-out;
+            }
+            .toast-exit {
+                animation: toastOut 0.3s ease-in forwards;
+            }
+            @keyframes toastIn {
+                from {
+                    opacity: 0;
+                    transform: translateX(40px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+            @keyframes toastOut {
+                from {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(40px);
+                }
+            }
+
+            .audio-wave span {
+                display: inline-block;
+                width: 3px;
+                margin: 0 1px;
+                background: var(--accent);
+                border-radius: 2px;
+                animation: wave 1s ease-in-out infinite;
+            }
+            .audio-wave span:nth-child(2) {
+                animation-delay: 0.15s;
+            }
+            .audio-wave span:nth-child(3) {
+                animation-delay: 0.3s;
+            }
+            .audio-wave span:nth-child(4) {
+                animation-delay: 0.45s;
+            }
+            @keyframes wave {
+                0%,
+                100% {
+                    height: 8px;
+                }
+                50% {
+                    height: 18px;
+                }
+            }
+
+            .surah-row {
+                transition: all 0.2s;
+            }
+            .surah-row:hover {
+                transform: translateY(-1px);
+            }
+            .surah-row:hover .surah-num {
+                background: var(--accent);
+                color: #fff;
+                border-color: var(--accent);
+            }
+            .surah-row:hover .surah-arrow {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            .surah-num {
+                transition: all 0.2s;
+                border: 1.5px solid var(--border);
+                background: var(--bg-s);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 42px;
+                height: 42px;
+                border-radius: 10px;
+                font-size: 12px;
+                font-weight: 700;
+                color: var(--fg-m);
+                flex-shrink: 0;
+            }
+            .surah-arrow {
+                opacity: 0;
+                transform: translateX(-4px);
+                transition: all 0.2s;
+            }
+
+            .audio-btn {
+                transition: all 0.2s;
+            }
+            .audio-btn:hover {
+                color: var(--accent);
+                transform: scale(1.15);
+            }
+            .audio-btn.playing {
+                color: var(--accent);
+            }
+
+            mark {
+                background: var(--gold-l);
+                color: var(--fg);
+                padding: 1px 3px;
+                border-radius: 3px;
+            }
+
+            .verse-row {
+                transition:
+                    background 0.3s,
+                    box-shadow 0.3s;
+            }
+            .verse-row.verse-active {
+                background: var(--accent-sub) !important;
+                box-shadow: inset 3px 0 0 var(--accent);
+            }
+
+            .toggle-pill {
+                position: relative;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                padding: 6px 14px;
+                border-radius: 999px;
+                font-size: 12px;
+                font-weight: 600;
+                border: 1.5px solid var(--border);
+                background: var(--card);
+                color: var(--fg-m);
+                transition: all 0.2s;
+                user-select: none;
+            }
+            .toggle-pill.active {
+                background: var(--accent);
+                color: #fff;
+                border-color: var(--accent);
+            }
+
+            /* Loading skeleton */
+            .skeleton {
+                background: linear-gradient(
+                    90deg,
+                    var(--bg-s) 25%,
+                    var(--border) 50%,
+                    var(--bg-s) 75%
+                );
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite;
+                border-radius: 8px;
+            }
+            @keyframes shimmer {
+                0% {
+                    background-position: 200% 0;
+                }
+                100% {
+                    background-position: -200% 0;
+                }
+            }
+
+            /* Verse card hover */
+            .verse-card {
+                transition: all 0.25s ease;
+                border-radius: 16px;
+            }
+            .verse-card:hover {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                transform: translateY(-1px);
+            }
+            .dark .verse-card:hover {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                *,
+                *::before,
+                *::after {
+                    animation-duration: 0.01ms !important;
+                    transition-duration: 0.01ms !important;
+                }
+            }
+        </style>
+    </head>
+    <body class="font-sans min-h-screen">
+        <!-- Navbar -->
+        <nav
+            class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b"
+            style="
+                background: color-mix(in srgb, var(--bg) 88%, transparent);
+                border-color: var(--border);
+            "
+        >
+            <div
+                class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between"
+            >
+                <a
+                    href="#/"
+                    class="flex items-center gap-2.5 group"
+                    aria-label="Beranda"
+                >
+                    <div
+                        class="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold"
+                        style="background: var(--accent)"
+                    >
+                        <i class="fas fa-quran"></i>
+                    </div>
+                    <span
+                        class="font-extrabold text-base tracking-tight hidden sm:block"
+                        style="color: var(--fg)"
+                        >Al-Qur'an</span
+                    >
+                </a>
+                <div class="flex items-center gap-1">
+                    <button
+                        data-action="open-search"
+                        class="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-[var(--bg-s)] transition"
+                        style="color: var(--fg-m)"
+                        aria-label="Cari"
+                    >
+                        <i class="fas fa-search text-sm"></i>
+                    </button>
+                    <button
+                        data-action="open-bookmarks"
+                        class="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-[var(--bg-s)] transition relative"
+                        style="color: var(--fg-m)"
+                        aria-label="Bookmark"
+                    >
+                        <i class="fas fa-bookmark text-sm"></i>
+                        <span
+                            id="bookmark-badge"
+                            class="hidden absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full text-[10px] font-bold text-white items-center justify-center"
+                            style="background: var(--accent); display: none"
+                        ></span>
+                    </button>
+                    <button
+                        data-action="toggle-dark"
+                        class="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-[var(--bg-s)] transition"
+                        style="color: var(--fg-m)"
+                        aria-label="Mode gelap"
+                    >
+                        <i class="fas fa-moon text-sm icon-moon"></i>
+                        <i
+                            class="fas fa-sun text-sm icon-sun"
+                            style="display: none"
+                        ></i>
+                    </button>
+                    <button
+                        data-action="toggle-mobile-menu"
+                        class="sm:hidden w-9 h-9 rounded-lg flex items-center justify-center hover:bg-[var(--bg-s)] transition"
+                        style="color: var(--fg-m)"
+                        aria-label="Menu"
+                    >
+                        <i class="fas fa-bars text-sm"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Search Bar -->
+            <div
+                id="search-bar"
+                class="hidden border-t"
+                style="border-color: var(--border)"
+            >
+                <div class="max-w-5xl mx-auto px-4 py-2.5">
+                    <div class="relative">
+                        <i
+                            class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm"
+                            style="color: var(--fg-m)"
+                        ></i>
+                        <input
+                            id="search-input"
+                            type="text"
+                            placeholder="Cari ayat atau surah... (tekan /)"
+                            class="w-full h-10 pl-9 pr-10 rounded-lg border text-sm outline-none transition focus:ring-2 focus:ring-emerald-500/30"
+                            style="
+                                background: var(--bg-s);
+                                border-color: var(--border);
+                                color: var(--fg);
+                            "
+                            autocomplete="off"
+                        />
+                        <button
+                            data-action="close-search"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-sm"
+                            style="color: var(--fg-m)"
+                        >
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="fixed inset-0 z-[60] hidden">
+            <div
+                class="absolute inset-0 bg-black/40"
+                data-action="close-mobile-menu"
+            ></div>
+            <div
+                class="absolute right-0 top-0 bottom-0 w-72 shadow-2xl p-5 flex flex-col gap-3"
+                style="background: var(--card)"
+            >
+                <div class="flex items-center justify-between mb-2">
+                    <span class="font-bold" style="color: var(--fg)">Menu</span>
+                    <button
+                        data-action="close-mobile-menu"
+                        class="w-8 h-8 rounded-lg flex items-center justify-center"
+                        style="color: var(--fg-m)"
+                    >
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <a
+                    href="#/"
+                    data-action="close-mobile-menu"
+                    class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-[var(--bg-s)] transition text-sm"
+                    style="color: var(--fg)"
+                >
+                    <i
+                        class="fas fa-home w-5 text-center"
+                        style="color: var(--accent)"
+                    ></i>
+                    Daftar Surah
+                </a>
+                <a
+                    href="#/bookmarks"
+                    data-action="close-mobile-menu"
+                    class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-[var(--bg-s)] transition text-sm"
+                    style="color: var(--fg)"
+                >
+                    <i
+                        class="fas fa-bookmark w-5 text-center"
+                        style="color: var(--accent)"
+                    ></i>
+                    Bookmark
+                </a>
+                <div
+                    class="border-t mt-3 pt-4"
+                    style="border-color: var(--border)"
+                >
+                    <p
+                        class="text-xs mb-3 px-3 font-bold tracking-wide"
+                        style="color: var(--fg-m)"
+                    >
+                        PENGATURAN
+                    </p>
+                    <button
+                        data-action="toggle-dark"
+                        class="flex items-center justify-between px-3 py-3 w-full rounded-xl hover:bg-[var(--bg-s)] transition text-sm"
+                        style="color: var(--fg)"
+                    >
+                        <span>Mode Gelap</span>
+                        <div
+                            class="w-10 h-5 rounded-full relative"
+                            style="background: var(--border)"
+                        >
+                            <div
+                                class="mobile-dark-knob w-4 h-4 rounded-full absolute top-0.5 transition-all"
+                                style="background: white; left: 2px"
+                            ></div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Konten Utama -->
+        <main id="app" class="pt-14 min-h-screen"></main>
+
+        <!-- Audio Player Bar -->
+        <div
+            id="audio-bar"
+            class="hidden fixed bottom-0 left-0 right-0 z-50 border-t shadow-2xl"
+            style="background: var(--card); border-color: var(--border)"
+        >
+            <div class="max-w-5xl mx-auto px-4 py-3">
+                <div class="flex items-center gap-3">
+                    <div class="audio-wave flex items-end h-5">
+                        <span></span><span></span><span></span><span></span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p
+                            id="audio-bar-text"
+                            class="font-arab text-sm truncate"
+                            style="color: var(--fg)"
+                        ></p>
+                        <p
+                            id="audio-bar-info"
+                            class="text-xs"
+                            style="color: var(--fg-m)"
+                        ></p>
+                    </div>
+                    <button
+                        data-action="audio-prev"
+                        class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[var(--bg-s)] transition"
+                        style="color: var(--fg-m)"
+                        aria-label="Sebelumnya"
+                    >
+                        <i class="fas fa-backward-step text-sm"></i>
+                    </button>
+                    <button
+                        data-action="audio-toggle"
+                        class="w-11 h-11 rounded-full flex items-center justify-center text-white"
+                        style="background: var(--accent)"
+                        aria-label="Putar/Jeda"
+                    >
+                        <i class="fas fa-pause text-sm"></i>
+                    </button>
+                    <button
+                        data-action="audio-next"
+                        class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[var(--bg-s)] transition"
+                        style="color: var(--fg-m)"
+                        aria-label="Selanjutnya"
+                    >
+                        <i class="fas fa-forward-step text-sm"></i>
+                    </button>
+                    <button
+                        data-action="audio-stop"
+                        class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[var(--bg-s)] transition"
+                        style="color: var(--fg-m)"
+                        aria-label="Hentikan"
+                    >
+                        <i class="fas fa-xmark text-sm"></i>
+                    </button>
+                </div>
+                <div
+                    class="mt-2 h-1.5 rounded-full overflow-hidden cursor-pointer group"
+                    style="background: var(--bg-s)"
+                    id="audio-progress-bar"
+                >
+                    <div
+                        id="audio-progress"
+                        class="h-full rounded-full transition-none"
+                        style="background: var(--accent); width: 0%"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div
+            id="toast-container"
+            class="fixed bottom-20 right-4 z-[70] flex flex-col gap-2 pointer-events-none"
+        ></div>
+
+        <script>
+            /* ============================================================
+           KONFIGURASI & STATE GLOBAL
+           ============================================================ */
+            const API_BASE = "https://api.quran.com/api/v4";
+
+            /* ============================================================
+           AUDIO URL BUILDER — multi-CDN fallback
+           verse_key format: "1:1" → surah 1, ayat 1
+           everyayah format : "001001.mp3" (surah 3 digit, ayat 3 digit)
+           islamic.network  : nomor ayat absolut (1–6236)
+           ============================================================ */
+
+            // Tabel jumlah ayat per surah untuk hitung nomor absolut
+            const VERSES_PER_SURAH = [
+                7, 286, 200, 176, 120, 165, 206, 75, 129, 109, 123, 111, 43, 52,
+                99, 128, 111, 110, 98, 135, 112, 78, 118, 64, 77, 227, 93, 88,
+                69, 60, 34, 30, 73, 54, 45, 83, 182, 88, 75, 85, 54, 53, 89, 59,
+                37, 35, 38, 29, 18, 45, 60, 49, 62, 55, 78, 96, 29, 22, 24, 13,
+                14, 11, 11, 18, 12, 12, 30, 52, 52, 44, 28, 28, 20, 56, 40, 31,
+                50, 40, 46, 42, 29, 19, 36, 25, 22, 17, 19, 26, 30, 20, 15, 21,
+                11, 8, 8, 19, 5, 8, 8, 11, 11, 8, 3, 9, 5, 4, 7, 3, 6, 3, 5, 4,
+                5, 6,
+            ];
+
+            function verseKeyToAbsolute(verseKey) {
+                const [ch, v] = verseKey.split(":").map(Number);
+                let abs = 0;
+                for (let i = 0; i < ch - 1; i++) abs += VERSES_PER_SURAH[i];
+                return abs + v;
+            }
+
+            function verseKeyToEveryayah(verseKey) {
+                const [ch, v] = verseKey.split(":").map(Number);
+                return String(ch).padStart(3, "0") + String(v).padStart(3, "0");
+            }
+
+            // Daftar CDN yang akan dicoba berurutan
+            function getAudioUrls(verseKey) {
+                const abs = verseKeyToAbsolute(verseKey);
+                const ea = verseKeyToEveryayah(verseKey);
+                return [
+                    // everyayah.com — Mishary Alafasy 128kbps
+                    `https://everyayah.com/data/Alafasy_128kbps/${ea}.mp3`,
+                    // islamic.network — nomor absolut
+                    `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${abs}.mp3`,
+                    // verse_key langsung (format lama, kadang masih jalan)
+                    `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${verseKey}.mp3`,
+                ];
+            }
+
+            const state = {
+                view: "home",
+                chapters: [],
+                currentChapterId: null,
+                verses: [],
+                versesLoading: false,
+                searchResults: [],
+                searchLoading: false,
+                bookmarks: JSON.parse(
+                    localStorage.getItem("q_bookmarks") || "[]",
+                ),
+                settings: JSON.parse(
+                    localStorage.getItem("q_settings") ||
+                        '{"dark":false,"translation":true,"tafsir":false}',
+                ),
+                lastRead: JSON.parse(
+                    localStorage.getItem("q_lastread") || "null",
+                ),
+                audio: {
+                    playing: false,
+                    verseKey: null,
+                    audioEl: null,
+                    autoAdvance: true,
+                },
+                surahFilter: "",
+                surahTypeFilter: "all",
+            };
+
+            /* ============================================================
+           LAYANAN API (dengan cache)
+           ============================================================ */
+            const apiCache = {};
+            async function apiGet(url) {
+                if (apiCache[url]) return apiCache[url];
+                const res = await fetch(url);
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                const data = await res.json();
+                apiCache[url] = data;
+                return data;
+            }
+
+            async function fetchChapters() {
+                if (state.chapters.length) return state.chapters;
+                const data = await apiGet(API_BASE + "/chapters?language=id");
+                state.chapters = data.chapters;
+                return data.chapters;
+            }
+
+            /* ============================================================
+           FETCH AYAT — DIPERBAIKI
+           Menggunakan endpoint /verses/by_chapter dengan fields yang benar.
+           Teks Arab diambil dari text_uthmani (field standar API v4).
+           Terjemahan ID menggunakan resource_id 33 (Kemenag RI).
+           ============================================================ */
+            async function fetchVerses(chapterId) {
+                state.versesLoading = true;
+                state.verses = [];
+                render();
+
+                try {
+                    const allVerses = [];
+                    let page = 1;
+
+                    while (true) {
+                        // Gunakan endpoint verses/by_chapter dengan parameter lengkap
+                        const url =
+                            `${API_BASE}/verses/by_chapter/${chapterId}` +
+                            `?language=id` +
+                            `&words=false` +
+                            `&translations=33` + // Terjemahan Kemenag RI (ID)
+                            `&translation_fields=text` +
+                            `&fields=text_uthmani,verse_key,verse_number,juz_number,page_number` +
+                            `&per_page=50` +
+                            `&page=${page}`;
+
+                        const data = await apiGet(url);
+                        allVerses.push(...data.verses);
+
+                        if (!data.pagination || !data.pagination.next_page)
+                            break;
+                        page = data.pagination.next_page;
+                    }
+
+                    state.verses = allVerses;
+                    console.log(
+                        `[OK] Loaded ${allVerses.length} verses for surah ${chapterId}`,
+                    );
+
+                    if (allVerses.length > 0) {
+                        const sample = allVerses[0];
+                        console.log("[DEBUG] Fields:", Object.keys(sample));
+                        console.log(
+                            "[DEBUG] Arabic:",
+                            sample.text_uthmani?.substring(0, 50),
+                        );
+                        console.log(
+                            "[DEBUG] Translation:",
+                            sample.translations?.[0]?.text?.substring(0, 60),
+                        );
+                    }
+                } catch (err) {
+                    console.error("[ERROR] fetchVerses:", err);
+                    showToast(
+                        "Gagal memuat ayat. Periksa koneksi internet.",
+                        "error",
+                    );
+                    state.verses = [];
+                }
+
+                state.versesLoading = false;
+                render();
+            }
+
+            async function searchQuery(query) {
+                if (!query.trim()) {
+                    state.searchResults = [];
+                    render();
+                    return;
+                }
+                state.searchLoading = true;
+                render();
+                try {
+                    const data = await apiGet(
+                        `${API_BASE}/search?query=${encodeURIComponent(query)}&language=id&per_page=80`,
+                    );
+                    state.searchResults = data.search?.results || [];
+                } catch (e) {
+                    showToast("Pencarian gagal.", "error");
+                    state.searchResults = [];
+                }
+                state.searchLoading = false;
+                render();
+            }
+
+            /* ============================================================
+           ROUTER (hash-based SPA)
+           ============================================================ */
+            function parseHash() {
+                const hash = location.hash.slice(1) || "/";
+                if (hash === "/" || hash === "") return { view: "home" };
+                if (hash === "/bookmarks") return { view: "bookmarks" };
+                const m = hash.match(/^\/surah\/(\d+)$/);
+                if (m) return { view: "surah", id: parseInt(m[1]) };
+                const ms = hash.match(/^\/search\?q=(.+)$/);
+                if (ms)
+                    return { view: "search", query: decodeURIComponent(ms[1]) };
+                return { view: "home" };
+            }
+
+            function navigate(hash) {
+                location.hash = hash;
+            }
+
+            window.addEventListener("hashchange", () => {
+                applyRoute(parseHash());
+            });
+
+            function applyRoute(route) {
+                stopAudio();
+                state.view = route.view;
+                state.searchResults = [];
+                state.surahFilter = "";
+                state.surahTypeFilter = "all";
+
+                if (route.view === "surah") {
+                    const needsFetch =
+                        !state.verses.length ||
+                        state.currentChapterId !== route.id;
+                    state.currentChapterId = route.id;
+                    if (needsFetch) {
+                        state.verses = [];
+                        fetchVerses(route.id);
+                    }
+                } else if (route.view === "search" && route.query) {
+                    document
+                        .getElementById("search-bar")
+                        .classList.remove("hidden");
+                    const input = document.getElementById("search-input");
+                    if (input) input.value = route.query;
+                    searchQuery(route.query);
+                } else {
+                    state.verses = [];
+                    state.currentChapterId = null;
+                }
+                render();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+
+            /* ============================================================
+           UTILITAS
+           ============================================================ */
+            function esc(str) {
+                if (!str) return "";
+                const d = document.createElement("div");
+                d.textContent = str;
+                return d.innerHTML;
+            }
+
+            function getChapter(id) {
+                return state.chapters.find((c) => c.id === id);
+            }
+
+            /* Ambil teks Arab — prioritaskan text_uthmani */
+            function getArabicText(verse) {
+                return (
+                    verse.text_uthmani ||
+                    verse.text_uthmani_simple ||
+                    verse.text_imlaei ||
+                    verse.text_imlaei_simple ||
+                    verse.text_ar ||
+                    verse.text ||
+                    ""
+                );
+            }
+
+            /* Ambil terjemahan dari array translations */
+            function getTranslation(verse) {
+                if (!verse.translations || !verse.translations.length)
+                    return "";
+                // Coba ambil teks, bersihkan tag HTML
+                const raw = verse.translations[0]?.text || "";
+                return raw.replace(/<[^>]+>/g, "").trim();
+            }
+
+            function getTafsir(verse) {
+                if (!verse.translations || verse.translations.length < 2)
+                    return "";
+                return (verse.translations[1]?.text || "")
+                    .replace(/<[^>]+>/g, "")
+                    .trim();
+            }
+
+            function saveBookmarks() {
+                localStorage.setItem(
+                    "q_bookmarks",
+                    JSON.stringify(state.bookmarks),
+                );
+                updateBookmarkBadge();
+            }
+            function saveSettings() {
+                localStorage.setItem(
+                    "q_settings",
+                    JSON.stringify(state.settings),
+                );
+            }
+            function saveLastRead(chapterId, verseNumber) {
+                state.lastRead = {
+                    chapterId,
+                    verseNumber,
+                    timestamp: Date.now(),
+                };
+                localStorage.setItem(
+                    "q_lastread",
+                    JSON.stringify(state.lastRead),
+                );
+            }
+
+            function updateBookmarkBadge() {
+                const badge = document.getElementById("bookmark-badge");
+                if (state.bookmarks.length > 0) {
+                    badge.style.display = "flex";
+                    badge.textContent =
+                        state.bookmarks.length > 9
+                            ? "9+"
+                            : state.bookmarks.length;
+                } else {
+                    badge.style.display = "none";
+                }
+            }
+
+            function isBookmarked(verseKey) {
+                return state.bookmarks.some((b) => b.verseKey === verseKey);
+            }
+
+            function toggleBookmark(verseKey, text, chapterName) {
+                if (isBookmarked(verseKey)) {
+                    state.bookmarks = state.bookmarks.filter(
+                        (b) => b.verseKey !== verseKey,
+                    );
+                    showToast("Bookmark dihapus", "info");
+                } else {
+                    state.bookmarks.push({
+                        verseKey,
+                        text: text.substring(0, 120),
+                        chapterName,
+                        timestamp: Date.now(),
+                    });
+                    showToast("Ditambahkan ke bookmark", "success");
+                }
+                saveBookmarks();
+                render();
+            }
+
+            function getTimeAgo(ts) {
+                const diff = Date.now() - ts;
+                const mins = Math.floor(diff / 60000);
+                if (mins < 1) return "Baru saja";
+                if (mins < 60) return mins + " menit lalu";
+                const hours = Math.floor(mins / 60);
+                if (hours < 24) return hours + " jam lalu";
+                const days = Math.floor(hours / 24);
+                if (days < 30) return days + " hari lalu";
+                return Math.floor(days / 30) + " bulan lalu";
+            }
+
+            /* ============================================================
+           TOAST NOTIFICATION
+           ============================================================ */
+            function showToast(msg, type) {
+                const container = document.getElementById("toast-container");
+                const colors = {
+                    success: "#059669",
+                    error: "#DC2626",
+                    info: "#D97706",
+                };
+                const icons = {
+                    success: "fa-check-circle",
+                    error: "fa-exclamation-circle",
+                    info: "fa-info-circle",
+                };
+                const el = document.createElement("div");
+                el.className =
+                    "toast-enter pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg";
+                el.style.cssText = `background: var(--card); border-left: 4px solid ${colors[type]}; min-width: 220px; max-width: 360px;`;
+                el.innerHTML = `<i class="fas ${icons[type]} text-sm" style="color:${colors[type]}"></i><span class="text-sm" style="color: var(--fg);">${esc(msg)}</span>`;
+                container.appendChild(el);
+                setTimeout(() => {
+                    el.classList.remove("toast-enter");
+                    el.classList.add("toast-exit");
+                    el.addEventListener("animationend", () => el.remove());
+                }, 2500);
+            }
+
+            /* ============================================================
+           PENGELOLA AUDIO
+           ============================================================ */
+            function playAudio(verseKey) {
+                if (state.audio.audioEl) {
+                    state.audio.audioEl.pause();
+                    state.audio.audioEl.src = "";
+                }
+
+                state.audio.playing = true;
+                state.audio.verseKey = verseKey;
+                updateAudioBar();
+                updateVerseHighlight();
+
+                const urls = getAudioUrls(verseKey);
+                let urlIndex = 0;
+
+                function tryPlay() {
+                    if (urlIndex >= urls.length) {
+                        showToast(
+                            "Semua sumber audio gagal. Cek koneksi internet.",
+                            "error",
+                        );
+                        stopAudio();
+                        return;
+                    }
+                    const url = urls[urlIndex];
+                    console.log(`[Audio] Mencoba URL #${urlIndex + 1}: ${url}`);
+
+                    const audio = new Audio(url);
+                    audio.preload = "auto";
+                    state.audio.audioEl = audio;
+
+                    audio.addEventListener("timeupdate", () => {
+                        if (audio.duration) {
+                            const pct =
+                                (audio.currentTime / audio.duration) * 100;
+                            const prog =
+                                document.getElementById("audio-progress");
+                            if (prog) prog.style.width = pct + "%";
+                        }
+                    });
+
+                    audio.addEventListener("ended", () => {
+                        if (state.audio.autoAdvance) {
+                            const nk = getNextVerseKey(verseKey);
+                            if (nk) {
+                                playAudio(nk);
+                                scrollToVerse(nk);
+                                return;
+                            }
+                        }
+                        stopAudio();
+                    });
+
+                    audio.addEventListener("error", () => {
+                        console.warn(`[Audio] URL gagal: ${url}`);
+                        urlIndex++;
+                        tryPlay();
+                    });
+
+                    audio.play().catch((err) => {
+                        console.warn(`[Audio] play() gagal: ${err.message}`);
+                        urlIndex++;
+                        tryPlay();
+                    });
+                }
+
+                tryPlay();
+
+                const [ch, v] = verseKey.split(":").map(Number);
+                saveLastRead(ch, v);
+            }
+
+            function pauseAudio() {
+                if (state.audio.audioEl) state.audio.audioEl.pause();
+                state.audio.playing = false;
+                updateAudioBar();
+                updateVerseHighlight();
+            }
+            function resumeAudio() {
+                if (state.audio.audioEl) state.audio.audioEl.play();
+                state.audio.playing = true;
+                updateAudioBar();
+                updateVerseHighlight();
+            }
+
+            function stopAudio() {
+                if (state.audio.audioEl) {
+                    state.audio.audioEl.pause();
+                    state.audio.audioEl.src = "";
+                }
+                state.audio.playing = false;
+                state.audio.verseKey = null;
+                state.audio.audioEl = null;
+                document.getElementById("audio-bar").classList.add("hidden");
+                document
+                    .getElementById("main-content-area")
+                    ?.classList.remove("pb-24");
+                updateVerseHighlight();
+            }
+
+            function toggleAudioPlayback() {
+                if (state.audio.playing) pauseAudio();
+                else if (state.audio.audioEl) resumeAudio();
+            }
+
+            function getNextVerseKey(currentKey) {
+                const [ch, v] = currentKey.split(":").map(Number);
+                const chapter = getChapter(ch);
+                if (!chapter) return null;
+                if (v < chapter.verses_count) return ch + ":" + (v + 1);
+                return null;
+            }
+
+            function getPrevVerseKey(currentKey) {
+                const [ch, v] = currentKey.split(":").map(Number);
+                if (v > 1) return ch + ":" + (v - 1);
+                return null;
+            }
+
+            function updateAudioBar() {
+                const bar = document.getElementById("audio-bar");
+                const mainArea = document.getElementById("main-content-area");
+                if (!state.audio.playing || !state.audio.verseKey) {
+                    bar.classList.add("hidden");
+                    mainArea?.classList.remove("pb-24");
+                    return;
+                }
+                bar.classList.remove("hidden");
+                mainArea?.classList.add("pb-24");
+
+                const [ch, v] = state.audio.verseKey.split(":").map(Number);
+                const chapter = getChapter(ch);
+                const verse = state.verses.find(
+                    (vr) => vr.verse_key === state.audio.verseKey,
+                );
+                document.getElementById("audio-bar-text").textContent = verse
+                    ? getArabicText(verse)
+                    : "";
+                document.getElementById("audio-bar-info").textContent = chapter
+                    ? `${chapter.name_simple} : Ayat ${v}`
+                    : state.audio.verseKey;
+
+                const toggleIcon = bar.querySelector(
+                    '[data-action="audio-toggle"] i',
+                );
+                toggleIcon.className = state.audio.playing
+                    ? "fas fa-pause text-sm"
+                    : "fas fa-play text-sm";
+            }
+
+            function updateVerseHighlight() {
+                document.querySelectorAll(".verse-row").forEach((row) => {
+                    const vk = row.dataset.versekey;
+                    if (vk === state.audio.verseKey && state.audio.playing)
+                        row.classList.add("verse-active");
+                    else row.classList.remove("verse-active");
+                });
+                document.querySelectorAll(".audio-btn").forEach((btn) => {
+                    const vk = btn.dataset.versekey;
+                    if (vk === state.audio.verseKey && state.audio.playing) {
+                        btn.classList.add("playing");
+                        btn.innerHTML = '<i class="fas fa-pause text-sm"></i>';
+                    } else {
+                        btn.classList.remove("playing");
+                        btn.innerHTML = '<i class="fas fa-play text-sm"></i>';
+                    }
+                });
+            }
+
+            function scrollToVerse(verseKey) {
+                setTimeout(() => {
+                    const id = "verse-" + verseKey.replace(":", "-");
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center",
+                        });
+                        el.classList.add("verse-highlight");
+                        setTimeout(
+                            () => el.classList.remove("verse-highlight"),
+                            3000,
+                        );
+                    }
+                }, 150);
+            }
+
+            /* ============================================================
+           RENDER: BERANDA
+           ============================================================ */
+            function renderHome() {
+                let lastReadHtml = "";
+                if (state.lastRead) {
+                    const ch = getChapter(state.lastRead.chapterId);
+                    if (ch) {
+                        lastReadHtml = `
+                    <a href="#/surah/${ch.id}" class="flex items-center gap-4 p-4 rounded-2xl border transition hover:shadow-lg fade-in group" style="background: var(--card); border-color: var(--border);">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition" style="background: var(--accent-l);">
+                            <i class="fas fa-book-open" style="color: var(--accent);"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-[10px] font-bold tracking-widest" style="color: var(--accent);">LANJUTKAN MEMBACA</p>
+                            <p class="font-bold text-sm truncate mt-0.5" style="color: var(--fg);">${esc(ch.name_simple)} — Ayat ${state.lastRead.verseNumber}</p>
+                            <p class="text-xs mt-0.5" style="color: var(--fg-m);">${getTimeAgo(state.lastRead.timestamp)}</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-xs group-hover:translate-x-1 transition" style="color: var(--fg-m);"></i>
+                    </a>`;
+                    }
+                }
+
+                const filtered = state.chapters.filter((c) => {
+                    const q = state.surahFilter;
+                    const matchName =
+                        !q ||
+                        c.name_simple.toLowerCase().includes(q) ||
+                        c.name_arabic.includes(q) ||
+                        c.translated_name?.name?.toLowerCase().includes(q);
+                    const matchType =
+                        state.surahTypeFilter === "all" ||
+                        (state.surahTypeFilter === "meccan" &&
+                            c.revelation_place === "makkah") ||
+                        (state.surahTypeFilter === "medinan" &&
+                            c.revelation_place === "madinah");
+                    return matchName && matchType;
+                });
+
+                const surahList = filtered
+                    .map((c, i) => {
+                        const typeLabel =
+                            c.revelation_place === "makkah"
+                                ? "Makkiyah"
+                                : "Madaniyah";
+                        const typeColor =
+                            c.revelation_place === "makkah"
+                                ? "var(--gold)"
+                                : "var(--accent)";
+                        return `
+                <a href="#/surah/${c.id}" class="surah-row flex items-center gap-3 sm:gap-4 p-3.5 rounded-xl border cursor-pointer fade-in" style="background: var(--card); border-color: var(--border); animation-delay: ${Math.min(i * 0.015, 0.8)}s;">
+                    <div class="surah-num">${c.id}</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-arab text-xl leading-tight" style="color: var(--fg);">${esc(c.name_arabic)}</p>
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <span class="text-sm font-semibold" style="color: var(--fg);">${esc(c.name_simple)}</span>
+                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded" style="color: ${typeColor}; background: color-mix(in srgb, ${typeColor} 12%, transparent);">${typeLabel}</span>
+                        </div>
+                        <p class="text-xs truncate mt-0.5" style="color: var(--fg-m);">${esc(c.translated_name?.name || "")}</p>
+                    </div>
+                    <div class="text-right flex-shrink-0 hidden sm:block">
+                        <p class="text-xs font-semibold" style="color: var(--fg-m);">${c.verses_count} ayat</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-xs surah-arrow" style="color: var(--fg-m);"></i>
+                </a>`;
+                    })
+                    .join("");
+
+                return `
+            <div id="main-content-area">
+                <!-- Hero -->
+                <div class="relative overflow-hidden hero-pattern" style="background: linear-gradient(160deg, #064E3B 0%, #059669 55%, #10B981 100%);">
+                    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                        <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full float-anim" style="background: rgba(255,255,255,0.05);"></div>
+                        <div class="absolute -bottom-40 -left-20 w-96 h-96 rounded-full float-anim" style="background: rgba(255,255,255,0.03); animation-delay: 2s;"></div>
+                    </div>
+                    <div class="relative max-w-5xl mx-auto px-4 py-16 sm:py-24 text-center text-white">
+                        <p class="font-arab text-4xl sm:text-5xl mb-4 opacity-90 float-anim" style="animation-delay: 0.5s;">الْقُرْآن الْكَرِيم</p>
+                        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">Al-Qur'an Digital</h1>
+                        <p class="text-sm sm:text-base opacity-70 max-w-lg mx-auto leading-relaxed">Baca, cari, dan pahami Al-Qur'an dengan terjemahan Bahasa Indonesia</p>
+                        <div class="mt-8 flex flex-wrap justify-center gap-3">
+                            <button data-action="open-search" class="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm text-sm font-bold hover:bg-white/25 transition">
+                                <i class="fas fa-search text-xs"></i> Cari Ayat
+                            </button>
+                            <a href="#/surah/1" class="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-white text-emerald-800 text-sm font-bold hover:bg-white/90 transition">
+                                <i class="fas fa-book-open text-xs"></i> Mulai Baca
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-w-5xl mx-auto px-4 -mt-7 relative z-10 pb-16">
+                    ${lastReadHtml ? '<div class="mb-6">' + lastReadHtml + "</div>" : ""}
+
+                    <div class="mb-5 flex flex-col sm:flex-row gap-3 fade-in">
+                        <div class="relative flex-1">
+                            <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-xs" style="color: var(--fg-m);"></i>
+                            <input type="text" id="surah-filter-input" placeholder="Cari nama surah..." value="${esc(state.surahFilter)}"
+                                   class="w-full h-11 pl-10 pr-4 rounded-xl border text-sm outline-none transition focus:ring-2 focus:ring-emerald-500/30"
+                                   style="background: var(--card); border-color: var(--border); color: var(--fg);">
+                        </div>
+                        <div class="flex gap-2">
+                            <button data-action="filter-all" class="filter-btn px-4 h-11 rounded-xl border text-xs font-bold transition" style="color: var(--fg);">Semua</button>
+                            <button data-action="filter-meccan" class="filter-btn px-4 h-11 rounded-xl border text-xs font-bold transition" style="color: var(--fg);">Makkiyah</button>
+                            <button data-action="filter-medinan" class="filter-btn px-4 h-11 rounded-xl border text-xs font-bold transition" style="color: var(--fg);">Madaniyah</button>
+                        </div>
+                    </div>
+
+                    <div class="grid gap-2.5">
+                        ${surahList || '<div class="text-center py-16"><i class="fas fa-search text-3xl mb-3" style="color: var(--border);"></i><p class="text-sm" style="color: var(--fg-m);">Tidak ada surah yang cocok</p></div>'}
+                    </div>
+                    <p class="text-center text-xs mt-8" style="color: var(--fg-m);">Menampilkan ${filtered.length} dari 114 surah</p>
+                </div>
+            </div>`;
+            }
+
+            /* ============================================================
+           RENDER: HALAMAN SURAH — DIPERBAIKI & DISEMPURNAKAN
+           ============================================================ */
+            function renderSurahView() {
+                const ch = getChapter(state.currentChapterId);
+                if (!ch) {
+                    return `<div class="max-w-3xl mx-auto px-4 py-20 text-center">
+                    <i class="fas fa-exclamation-triangle text-3xl mb-3" style="color: var(--border);"></i>
+                    <p style="color: var(--fg-m);">Surah tidak ditemukan</p>
+                    <a href="#/" class="text-sm mt-4 inline-block" style="color: var(--accent);">Kembali ke daftar surah</a>
+                </div>`;
+                }
+
+                /* Loading state dengan skeleton */
+                if (state.versesLoading) {
+                    const skeletons = Array.from(
+                        { length: 6 },
+                        (_, i) => `
+                <div class="verse-card border p-5 sm:p-6 fade-in" style="background: var(--card); border-color: var(--border); animation-delay: ${i * 0.06}s;">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="skeleton w-10 h-10 flex-shrink-0" style="border-radius: 50%;"></div>
+                        <div class="flex-1"></div>
+                        <div class="skeleton w-7 h-7 rounded-lg"></div>
+                        <div class="skeleton w-7 h-7 rounded-lg"></div>
+                    </div>
+                    <div class="skeleton w-full h-12 mb-3"></div>
+                    <div class="skeleton w-4/5 h-12 mb-5" style="margin-left: auto;"></div>
+                    <div class="skeleton w-full h-4 mb-2 rounded"></div>
+                    <div class="skeleton w-3/4 h-4 rounded"></div>
+                </div>`,
+                    ).join("");
+
+                    return `
+                <div id="main-content-area">
+                    <div class="border-b" style="border-color: var(--border); background: var(--bg-s);">
+                        <div class="max-w-3xl mx-auto px-4 py-7 text-center">
+                            <div class="flex items-center justify-center gap-2 mb-4">
+                                <a href="#/" class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[var(--card)] transition" style="color: var(--fg-m);"><i class="fas fa-arrow-left text-xs"></i></a>
+                            </div>
+                            <div class="skeleton h-12 w-48 mx-auto mb-3 rounded-xl"></div>
+                            <div class="skeleton h-7 w-36 mx-auto mb-2 rounded-lg"></div>
+                            <div class="skeleton h-4 w-48 mx-auto rounded"></div>
+                        </div>
+                    </div>
+                    <div class="max-w-3xl mx-auto px-4 py-8 text-center">
+                        <div class="spin-slow inline-block w-10 h-10 rounded-full mb-4" style="border: 3px solid var(--border); border-top-color: var(--accent);"></div>
+                        <p class="font-semibold" style="color: var(--fg);">Memuat ${esc(ch.name_simple)}…</p>
+                        <p class="text-sm mt-1" style="color: var(--fg-m);">Mengambil ${ch.verses_count} ayat dari server</p>
+                    </div>
+                    <div class="max-w-3xl mx-auto px-4 pb-10 space-y-3">${skeletons}</div>
+                </div>`;
+                }
+
+                /* Error / kosong */
+                if (!state.verses.length) {
+                    return `
+                <div class="max-w-3xl mx-auto px-4 py-24 text-center">
+                    <i class="fas fa-exclamation-circle text-3xl mb-3" style="color: var(--border);"></i>
+                    <p class="font-semibold" style="color: var(--fg);">Tidak ada ayat yang ditemukan</p>
+                    <p class="text-sm mt-1 mb-4" style="color: var(--fg-m);">Terjadi kesalahan saat memuat data. Pastikan Anda terhubung ke internet.</p>
+                    <button data-action="retry-fetch" data-id="${ch.id}" class="px-5 py-2 rounded-xl text-sm font-semibold text-white" style="background: var(--accent);">
+                        <i class="fas fa-rotate-right mr-1.5"></i>Coba Lagi
+                    </button>
+                </div>`;
+                }
+
+                const showTrans = state.settings.translation;
+                const showTafsir = state.settings.tafsir;
+                const prevCh = getChapter(ch.id - 1);
+                const nextCh = getChapter(ch.id + 1);
+                const typeLabel =
+                    ch.revelation_place === "makkah" ? "Makkiyah" : "Madaniyah";
+
+                /* Bismillah untuk semua kecuali At-Tawbah (9) dan Al-Fatihah (1 sudah include) */
+                const bismillahHtml =
+                    ch.id !== 9
+                        ? `
+            <div class="text-center py-8 fade-in">
+                <div class="bismillah-ornament mb-2">
+                    <p class="font-arab text-2xl sm:text-3xl" style="color: var(--fg);">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+                </div>
+                <p class="text-xs mt-2" style="color: var(--fg-m);">Dengan nama Allah Yang Maha Pengasih, Maha Penyayang</p>
+            </div>`
+                        : `
+            <div class="text-center py-4 fade-in">
+                <p class="text-xs px-4 py-2 inline-block rounded-full" style="color: var(--fg-m); background: var(--bg-s);">
+                    <i class="fas fa-info-circle mr-1"></i> Surah At-Tawbah tidak diawali Bismillah
+                </p>
+            </div>`;
+
+                /* Render setiap ayat */
+                const versesHtml = state.verses
+                    .map((v, i) => {
+                        const vk = v.verse_key;
+                        if (!vk) return "";
+                        const parts = vk.split(":");
+                        const chNum = parts[0];
+                        const vNum = parts[1];
+
+                        const arabicText = getArabicText(v);
+                        const trans = showTrans ? getTranslation(v) : "";
+                        const bookmarked = isBookmarked(vk);
+                        const isActive =
+                            state.audio.verseKey === vk && state.audio.playing;
+                        const juz = v.juz_number
+                            ? `<span class="ml-2">· Juz ${v.juz_number}</span>`
+                            : "";
+
+                        return `
+                <div id="verse-${chNum}-${vNum}"
+                     class="verse-row verse-card border fade-in ${isActive ? "verse-active" : ""}"
+                     data-versekey="${vk}"
+                     style="background: var(--card); border-color: var(--border); animation-delay: ${Math.min(i * 0.012, 0.9)}s;">
+
+                    <!-- Toolbar atas -->
+                    <div class="flex items-center gap-2 px-4 sm:px-6 pt-4 pb-3 border-b" style="border-color: var(--border)">
+                        <div class="verse-num">${esc(vNum)}</div>
+                        <span class="text-[10px] font-semibold" style="color: var(--fg-m);">
+                            ${esc(ch.name_simple)}${juz}
+                        </span>
+                        <div class="flex-1"></div>
+                        <button data-action="toggle-bookmark"
+                                data-versekey="${vk}"
+                                data-text="${esc(arabicText.substring(0, 80))}"
+                                data-chaptername="${esc(ch.name_simple)}"
+                                class="w-8 h-8 rounded-lg flex items-center justify-center transition hover:bg-[var(--bg-s)]"
+                                style="color: ${bookmarked ? "var(--gold)" : "var(--fg-m)"};"
+                                title="${bookmarked ? "Hapus bookmark" : "Tambah bookmark"}">
+                            <i class="fas fa-bookmark text-sm"></i>
+                        </button>
+                        <button data-action="play-verse"
+                                data-versekey="${vk}"
+                                class="audio-btn w-8 h-8 rounded-lg flex items-center justify-center ${isActive ? "playing" : ""}"
+                                style="color: ${isActive ? "var(--accent)" : "var(--fg-m)"};"
+                                title="Putar audio">
+                            <i class="fas fa-${isActive ? "pause" : "play"} text-sm"></i>
+                        </button>
+                    </div>
+
+                    <!-- Teks Arab -->
+                    <div class="px-4 sm:px-6 pt-5 pb-4">
+                        <p class="arabic-text" lang="ar">${arabicText ? esc(arabicText) : '<span style="color: var(--fg-m); font-size: 0.9rem;">Teks Arab tidak tersedia</span>'}</p>
+                    </div>
+
+                    <!-- Terjemahan -->
+                    ${
+                        showTrans && trans
+                            ? `
+                    <div class="px-4 sm:px-6 pb-4">
+                        <div class="border-t pt-4" style="border-color: var(--border);">
+                            <p class="text-xs font-bold mb-2 flex items-center gap-1.5" style="color: var(--accent);">
+                                <i class="fas fa-language text-[10px]"></i> Terjemahan
+                            </p>
+                            <p class="text-sm leading-relaxed" style="color: var(--fg-m);">${esc(trans)}</p>
+                        </div>
+                    </div>`
+                            : showTrans
+                              ? `
+                    <div class="px-4 sm:px-6 pb-4">
+                        <p class="text-xs italic" style="color: var(--border);">Terjemahan tidak tersedia untuk ayat ini</p>
+                    </div>`
+                              : ""
+                    }
+                </div>`;
+                    })
+                    .join("");
+
+                return `
+            <div id="main-content-area">
+                <!-- Header Surah -->
+                <div class="border-b" style="border-color: var(--border); background: var(--bg-s);">
+                    <div class="max-w-3xl mx-auto px-4 py-7 text-center">
+                        <div class="flex items-center justify-center gap-2 mb-4">
+                            <a href="#/" class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[var(--card)] transition" style="color: var(--fg-m);" aria-label="Kembali">
+                                <i class="fas fa-arrow-left text-xs"></i>
+                            </a>
+                            <span class="text-[10px] font-bold tracking-widest px-2.5 py-1 rounded-full"
+                                  style="background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent);">${typeLabel}</span>
+                            <span class="text-[10px] font-bold tracking-widest px-2.5 py-1 rounded-full"
+                                  style="background: var(--card); color: var(--fg-m);">${ch.verses_count} AYAT</span>
+                        </div>
+                        <p class="font-arab text-5xl sm:text-6xl mb-2" style="color: var(--fg);">${esc(ch.name_arabic)}</p>
+                        <h2 class="text-xl font-extrabold mt-1" style="color: var(--fg);">${esc(ch.name_simple)}</h2>
+                        <p class="text-sm mt-1" style="color: var(--fg-m);">${esc(ch.translated_name?.name || "")}</p>
+
+                        <!-- Toggle Controls -->
+                        <div class="flex items-center justify-center gap-3 mt-5">
+                            <button data-action="toggle-translation" class="toggle-pill ${showTrans ? "active" : ""}">
+                                <i class="fas fa-language mr-1.5 text-[10px]"></i> Terjemahan
+                            </button>
+                            <button data-action="toggle-tafsir" class="toggle-pill ${showTafsir ? "active" : ""}">
+                                <i class="fas fa-book mr-1.5 text-[10px]"></i> Tafsir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                ${bismillahHtml}
+
+                <!-- Daftar Ayat -->
+                <div class="max-w-3xl mx-auto px-4 py-4 space-y-3 pb-10">
+                    ${versesHtml}
+                </div>
+
+                <!-- Navigasi Surah -->
+                <div class="border-t mt-4" style="border-color: var(--border); background: var(--bg-s);">
+                    <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+                        ${
+                            prevCh
+                                ? `
+                        <a href="#/surah/${prevCh.id}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-semibold transition hover:shadow-md flex-1" style="background: var(--card); border-color: var(--border); color: var(--fg);">
+                            <i class="fas fa-chevron-left text-xs" style="color: var(--fg-m);"></i>
+                            <div class="text-left min-w-0">
+                                <p class="text-xs" style="color: var(--fg-m);">Sebelumnya</p>
+                                <p class="truncate">${esc(prevCh.name_simple)}</p>
+                            </div>
+                        </a>`
+                                : '<div class="flex-1"></div>'
+                        }
+                        ${
+                            nextCh
+                                ? `
+                        <a href="#/surah/${nextCh.id}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-semibold transition hover:shadow-md flex-1 justify-end text-right" style="background: var(--card); border-color: var(--border); color: var(--fg);">
+                            <div class="min-w-0">
+                                <p class="text-xs" style="color: var(--fg-m);">Selanjutnya</p>
+                                <p class="truncate">${esc(nextCh.name_simple)}</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-xs" style="color: var(--fg-m);"></i>
+                        </a>`
+                                : '<div class="flex-1"></div>'
+                        }
+                    </div>
+                </div>
+            </div>`;
+            }
+
+            /* ============================================================
+           RENDER: HASIL PENCARIAN
+           ============================================================ */
+            function renderSearchView() {
+                if (state.searchLoading) {
+                    return '<div class="max-w-3xl mx-auto px-4 py-24 text-center"><div class="spin-slow inline-block w-12 h-12 rounded-full mb-5" style="border: 3px solid var(--border); border-top-color: var(--accent);"></div><p class="text-sm" style="color: var(--fg-m);">Mencari ayat...</p></div>';
+                }
+                if (!state.searchResults.length) {
+                    return `<div class="max-w-3xl mx-auto px-4 py-24 text-center">
+                    <i class="fas fa-search text-4xl mb-4" style="color: var(--border);"></i>
+                    <p class="font-bold text-lg" style="color: var(--fg);">Tidak ada hasil ditemukan</p>
+                    <p class="text-sm mt-2" style="color: var(--fg-m);">Coba gunakan kata kunci berbeda</p>
+                </div>`;
+                }
+                const list = state.searchResults
+                    .map((r, i) => {
+                        const [chId, vNum] = r.verse_key.split(":");
+                        const ch = getChapter(parseInt(chId));
+                        const chName = ch ? ch.name_simple : "Surah " + chId;
+                        return `
+                <a href="#/surah/${chId}" data-action="search-go" data-versekey="${r.verse_key}"
+                   class="flex items-start gap-4 p-4 rounded-xl border transition hover:shadow-md cursor-pointer fade-in"
+                   style="background: var(--card); border-color: var(--border); animation-delay: ${Math.min(i * 0.025, 0.5)}s;">
+                    <div class="verse-num mt-0.5">${vNum}</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-arab text-base leading-loose mb-1" style="color: var(--fg);">${r.highlight || esc(r.text)}</p>
+                        <p class="text-xs font-semibold" style="color: var(--accent);">${esc(chName)} : ${vNum}</p>
+                    </div>
+                    <i class="fas fa-arrow-right text-xs mt-2" style="color: var(--fg-m);"></i>
+                </a>`;
+                    })
+                    .join("");
+                return `
+            <div id="main-content-area" class="max-w-3xl mx-auto px-4 py-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h2 class="text-lg font-bold" style="color: var(--fg);">Hasil Pencarian</h2>
+                        <p class="text-xs" style="color: var(--fg-m);">${state.searchResults.length} ayat ditemukan</p>
+                    </div>
+                    <a href="#/" class="text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-[var(--bg-s)] transition" style="color: var(--accent);"><i class="fas fa-times mr-1"></i>Tutup</a>
+                </div>
+                <div class="space-y-2.5">${list}</div>
+            </div>`;
+            }
+
+            /* ============================================================
+           RENDER: BOOKMARK
+           ============================================================ */
+            function renderBookmarksView() {
+                if (!state.bookmarks.length) {
+                    return `<div class="max-w-3xl mx-auto px-4 py-24 text-center">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5" style="background: var(--bg-s);">
+                        <i class="fas fa-bookmark text-2xl" style="color: var(--border);"></i>
+                    </div>
+                    <p class="font-bold text-lg" style="color: var(--fg);">Belum ada bookmark</p>
+                    <p class="text-sm mt-2 mb-6" style="color: var(--fg-m);">Tandai ayat favorit Anda dengan ikon bookmark saat membaca</p>
+                    <a href="#/" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90" style="background: var(--accent);">
+                        <i class="fas fa-book-open text-xs"></i> Mulai Membaca
+                    </a>
+                </div>`;
+                }
+                const sorted = [...state.bookmarks].sort(
+                    (a, b) => b.timestamp - a.timestamp,
+                );
+                const list = sorted
+                    .map((b, i) => {
+                        const [chId, vNum] = b.verseKey.split(":");
+                        const ch = getChapter(parseInt(chId));
+                        const chName = ch ? ch.name_simple : "Surah " + chId;
+                        return `
+                <a href="#/surah/${chId}" data-action="bookmark-go" data-versekey="${b.verseKey}"
+                   class="flex items-start gap-4 p-4 rounded-xl border transition hover:shadow-md cursor-pointer fade-in"
+                   style="background: var(--card); border-color: var(--border); animation-delay: ${Math.min(i * 0.03, 0.5)}s;">
+                    <div class="verse-num mt-0.5">${vNum}</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-arab text-base leading-loose mb-1" style="color: var(--fg);">${esc(b.text)}</p>
+                        <p class="text-xs font-semibold" style="color: var(--accent);">${esc(chName)} : ${vNum} &middot; ${getTimeAgo(b.timestamp)}</p>
+                    </div>
+                    <button data-action="remove-bookmark" data-versekey="${b.verseKey}"
+                            class="w-8 h-8 rounded-lg flex items-center justify-center transition hover:bg-red-50 flex-shrink-0"
+                            style="color: var(--fg-m);" aria-label="Hapus"
+                            onclick="event.preventDefault(); event.stopPropagation();">
+                        <i class="fas fa-trash-can text-xs"></i>
+                    </button>
+                </a>`;
+                    })
+                    .join("");
+                return `
+            <div id="main-content-area" class="max-w-3xl mx-auto px-4 py-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h2 class="text-lg font-bold" style="color: var(--fg);">Bookmark</h2>
+                        <p class="text-xs" style="color: var(--fg-m);">${state.bookmarks.length} ayat ditandai</p>
+                    </div>
+                    <a href="#/" class="text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-[var(--bg-s)] transition" style="color: var(--accent);"><i class="fas fa-times mr-1"></i>Tutup</a>
+                </div>
+                <div class="space-y-2.5">${list}</div>
+            </div>`;
+            }
+
+            /* ============================================================
+           RENDER UTAMA
+           ============================================================ */
+            function render() {
+                const app = document.getElementById("app");
+                switch (state.view) {
+                    case "home":
+                        app.innerHTML = renderHome();
+                        break;
+                    case "surah":
+                        app.innerHTML = renderSurahView();
+                        break;
+                    case "search":
+                        app.innerHTML = renderSearchView();
+                        break;
+                    case "bookmarks":
+                        app.innerHTML = renderBookmarksView();
+                        break;
+                    default:
+                        app.innerHTML = renderHome();
+                }
+                updateBookmarkBadge();
+                updateDarkUI();
+                updateFilterButtons();
+                updateAudioBar();
+            }
+
+            /* ============================================================
+           EVENT LISTENERS (Delegasi Global)
+           ============================================================ */
+            document.addEventListener("click", (e) => {
+                const btn = e.target.closest("[data-action]");
+                if (!btn) return;
+                const action = btn.dataset.action;
+                const verseKey = btn.dataset.versekey;
+
+                switch (action) {
+                    case "open-search":
+                        e.preventDefault();
+                        document
+                            .getElementById("search-bar")
+                            .classList.remove("hidden");
+                        setTimeout(
+                            () =>
+                                document.getElementById("search-input").focus(),
+                            100,
+                        );
+                        break;
+
+                    case "close-search":
+                        document
+                            .getElementById("search-bar")
+                            .classList.add("hidden");
+                        document.getElementById("search-input").value = "";
+                        if (state.view === "search") navigate("#/");
+                        break;
+
+                    case "open-bookmarks":
+                        e.preventDefault();
+                        navigate("#/bookmarks");
+                        break;
+
+                    case "toggle-dark":
+                        state.settings.dark = !state.settings.dark;
+                        saveSettings();
+                        applyDarkMode();
+                        break;
+
+                    case "toggle-mobile-menu":
+                        document
+                            .getElementById("mobile-menu")
+                            .classList.remove("hidden");
+                        break;
+
+                    case "close-mobile-menu":
+                        document
+                            .getElementById("mobile-menu")
+                            .classList.add("hidden");
+                        break;
+
+                    case "toggle-translation":
+                        state.settings.translation =
+                            !state.settings.translation;
+                        saveSettings();
+                        render();
+                        break;
+
+                    case "toggle-tafsir":
+                        state.settings.tafsir = !state.settings.tafsir;
+                        saveSettings();
+                        render();
+                        break;
+
+                    case "play-verse":
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (
+                            state.audio.verseKey === verseKey &&
+                            state.audio.playing
+                        )
+                            pauseAudio();
+                        else playAudio(verseKey);
+                        break;
+
+                    case "toggle-bookmark":
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleBookmark(
+                            verseKey,
+                            btn.dataset.text || "",
+                            btn.dataset.chaptername || "",
+                        );
+                        break;
+
+                    case "remove-bookmark":
+                        e.preventDefault();
+                        e.stopPropagation();
+                        state.bookmarks = state.bookmarks.filter(
+                            (b) => b.verseKey !== verseKey,
+                        );
+                        saveBookmarks();
+                        render();
+                        showToast("Bookmark dihapus", "info");
+                        break;
+
+                    case "search-go":
+                        if (verseKey) {
+                            navigate("#/surah/" + verseKey.split(":")[0]);
+                            waitForVerseThenScroll(verseKey);
+                        }
+                        break;
+
+                    case "bookmark-go":
+                        if (verseKey) {
+                            navigate("#/surah/" + verseKey.split(":")[0]);
+                            waitForVerseThenScroll(verseKey);
+                        }
+                        break;
+
+                    case "audio-toggle":
+                        toggleAudioPlayback();
+                        break;
+                    case "audio-stop":
+                        stopAudio();
+                        break;
+
+                    case "audio-next":
+                        if (state.audio.verseKey) {
+                            const nk = getNextVerseKey(state.audio.verseKey);
+                            if (nk) {
+                                playAudio(nk);
+                                scrollToVerse(nk);
+                            }
+                        }
+                        break;
+
+                    case "audio-prev":
+                        if (state.audio.verseKey) {
+                            const pk = getPrevVerseKey(state.audio.verseKey);
+                            if (pk) {
+                                playAudio(pk);
+                                scrollToVerse(pk);
+                            }
+                        }
+                        break;
+
+                    case "filter-all":
+                        state.surahTypeFilter = "all";
+                        render();
+                        break;
+                    case "filter-meccan":
+                        state.surahTypeFilter = "meccan";
+                        render();
+                        break;
+                    case "filter-medinan":
+                        state.surahTypeFilter = "medinan";
+                        render();
+                        break;
+
+                    case "retry-fetch":
+                        const id = parseInt(btn.dataset.id);
+                        if (id) {
+                            state.verses = [];
+                            fetchVerses(id);
+                        }
+                        break;
+                }
+            });
+
+            function waitForVerseThenScroll(verseKey) {
+                const timer = setInterval(() => {
+                    if (state.verses.length > 0) {
+                        clearInterval(timer);
+                        scrollToVerse(verseKey);
+                    }
+                }, 200);
+                setTimeout(() => clearInterval(timer), 15000);
+            }
+
+            let searchTimeout;
+            document.addEventListener("input", (e) => {
+                if (e.target.id === "search-input") {
+                    clearTimeout(searchTimeout);
+                    const q = e.target.value;
+                    searchTimeout = setTimeout(() => {
+                        if (q.trim().length >= 2) {
+                            state.view = "search";
+                            searchQuery(q);
+                        } else if (state.view === "search") {
+                            state.searchResults = [];
+                            render();
+                        }
+                    }, 400);
+                }
+                if (e.target.id === "surah-filter-input") {
+                    state.surahFilter = e.target.value.toLowerCase();
+                    render();
+                    setTimeout(() => {
+                        const inp =
+                            document.getElementById("surah-filter-input");
+                        if (inp) {
+                            inp.focus();
+                            inp.setSelectionRange(
+                                inp.value.length,
+                                inp.value.length,
+                            );
+                        }
+                    }, 10);
+                }
+            });
+
+            document.addEventListener("click", (e) => {
+                if (
+                    e.target.closest("#audio-progress-bar") &&
+                    state.audio.audioEl?.duration
+                ) {
+                    const bar = document.getElementById("audio-progress-bar");
+                    const rect = bar.getBoundingClientRect();
+                    const pct = Math.max(
+                        0,
+                        Math.min(1, (e.clientX - rect.left) / rect.width),
+                    );
+                    state.audio.audioEl.currentTime =
+                        pct * state.audio.audioEl.duration;
+                }
+            });
+
+            document.addEventListener("keydown", (e) => {
+                if (
+                    e.target.tagName === "INPUT" ||
+                    e.target.tagName === "TEXTAREA"
+                )
+                    return;
+                if (e.key === "Escape") {
+                    document
+                        .getElementById("search-bar")
+                        .classList.add("hidden");
+                    document
+                        .getElementById("mobile-menu")
+                        .classList.add("hidden");
+                }
+                if (e.key === "/" && !e.ctrlKey && !e.metaKey) {
+                    e.preventDefault();
+                    document
+                        .getElementById("search-bar")
+                        .classList.remove("hidden");
+                    setTimeout(
+                        () => document.getElementById("search-input").focus(),
+                        100,
+                    );
+                }
+                if (e.key === "ArrowRight" && state.audio.playing) {
+                    const nk = getNextVerseKey(state.audio.verseKey);
+                    if (nk) {
+                        playAudio(nk);
+                        scrollToVerse(nk);
+                    }
+                }
+                if (e.key === "ArrowLeft" && state.audio.playing) {
+                    const pk = getPrevVerseKey(state.audio.verseKey);
+                    if (pk) {
+                        playAudio(pk);
+                        scrollToVerse(pk);
+                    }
+                }
+                if (e.key === " " && state.audio.audioEl) {
+                    e.preventDefault();
+                    toggleAudioPlayback();
+                }
+            });
+
+            /* ============================================================
+           DARK MODE
+           ============================================================ */
+            function applyDarkMode() {
+                document.documentElement.classList.toggle(
+                    "dark",
+                    state.settings.dark,
+                );
+                updateDarkUI();
+            }
+
+            function updateDarkUI() {
+                const dark = state.settings.dark;
+                document
+                    .querySelectorAll(".icon-moon")
+                    .forEach((el) => (el.style.display = dark ? "none" : ""));
+                document
+                    .querySelectorAll(".icon-sun")
+                    .forEach((el) => (el.style.display = dark ? "" : "none"));
+                document.querySelectorAll(".mobile-dark-knob").forEach((el) => {
+                    el.style.left = dark ? "22px" : "2px";
+                    el.parentElement.style.background = dark
+                        ? "var(--accent)"
+                        : "var(--border)";
+                });
+            }
+
+            function updateFilterButtons() {
+                document.querySelectorAll(".filter-btn").forEach((btn) => {
+                    const action = btn.dataset.action;
+                    const isActive =
+                        (action === "filter-all" &&
+                            state.surahTypeFilter === "all") ||
+                        (action === "filter-meccan" &&
+                            state.surahTypeFilter === "meccan") ||
+                        (action === "filter-medinan" &&
+                            state.surahTypeFilter === "medinan");
+                    btn.style.background = isActive
+                        ? "var(--accent)"
+                        : "var(--card)";
+                    btn.style.color = isActive ? "#fff" : "var(--fg)";
+                    btn.style.borderColor = isActive
+                        ? "var(--accent)"
+                        : "var(--border)";
+                });
+            }
+
+            /* ============================================================
+           INISIALISASI
+           ============================================================ */
+            async function init() {
+                applyDarkMode();
+                try {
+                    await fetchChapters();
+                    console.log(
+                        "[INIT] Loaded " + state.chapters.length + " chapters",
+                    );
+                } catch (e) {
+                    console.error("[INIT] Failed:", e);
+                    showToast(
+                        "Gagal memuat daftar surah. Periksa koneksi internet.",
+                        "error",
+                    );
+                }
+                applyRoute(parseHash());
+            }
+
+            init();
+        </script>
+    </body>
+</html>
